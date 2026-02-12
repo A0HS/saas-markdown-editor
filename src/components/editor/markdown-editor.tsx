@@ -6,6 +6,48 @@ import CodeMirror, { type ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { EditorView } from "@codemirror/view";
+import TurndownService from "turndown";
+
+const turndown = new TurndownService({
+  headingStyle: "atx",
+  codeBlockStyle: "fenced",
+  bulletListMarker: "-",
+});
+
+// Preserve strikethrough
+turndown.addRule("strikethrough", {
+  filter: ["del", "s"],
+  replacement: (content) => `~~${content}~~`,
+});
+
+function htmlToMarkdown(html: string): string {
+  try {
+    return turndown.turndown(html);
+  } catch {
+    return "";
+  }
+}
+
+const pasteAsMarkdown = EditorView.domEventHandlers({
+  paste(event, view) {
+    const clipboard = event.clipboardData;
+    if (!clipboard) return false;
+
+    const html = clipboard.getData("text/html");
+    if (!html) return false; // no HTML → let CodeMirror handle plain text
+
+    const md = htmlToMarkdown(html);
+    if (!md) return false;
+
+    event.preventDefault();
+    const { from, to } = view.state.selection.main;
+    view.dispatch({
+      changes: { from, to, insert: md },
+      selection: { anchor: from + md.length },
+    });
+    return true;
+  },
+});
 
 interface MarkdownEditorProps {
   value: string;
@@ -75,6 +117,7 @@ export function MarkdownEditor({
         markdown({ base: markdownLanguage, codeLanguages: languages }),
         EditorView.lineWrapping,
         fontTheme,
+        pasteAsMarkdown,
       ]}
       className="h-full"
       basicSetup={{
