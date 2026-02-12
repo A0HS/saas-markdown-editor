@@ -46,16 +46,17 @@ export function EditorToolbar({ content, onContentChange, fontSize, onFontSizeCh
           xmlns="http://www.w3.org/2000/svg"
           width="20"
           height="20"
-          viewBox="0 0 24 24"
+          viewBox="0 0 32 32"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           className="text-primary"
         >
-          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-          <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+          <text x="10" y="22" fontFamily="Arial, sans-serif" fontSize="20" fontWeight="bold" fill="currentColor" textAnchor="middle" stroke="none">M</text>
+          <line x1="24" y1="8" x2="24" y2="20" />
+          <polyline points="20,17 24,23 28,17" />
         </svg>
         <h1 className="text-sm font-semibold">한국GPT협회 Markdown Editor</h1>
       </div>
